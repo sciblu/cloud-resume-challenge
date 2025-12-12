@@ -1,0 +1,18 @@
+{{- $page := .Page -}}
+{{- $raw := .Get 0 -}}
+{{- $parts := split $raw " " -}}
+{{- $lastIndex := sub (len $parts) 1 -}}
+{{- $url := index $parts $lastIndex -}}
+{{- $citation := delimit (first $lastIndex $parts) " " -}}
+
+<article class="pub-card">
+  <div class="pub-citation">
+    {{ $page.RenderString $citation }}
+  </div>
+
+  <div class="pub-links">
+    <a class="pub-btn" href="{{ $url }}" target="_blank" rel="noopener">
+      Open article
+    </a>
+  </div>
+</article>

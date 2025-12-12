@@ -1,0 +1,176 @@
+/* ============================================
+   PUBLICATION LINKS LAYOUT
+   ============================================ */
+
+/* Creates flexible row layout for publication action buttons */
+.pub-links {
+  display: flex;           /* Enables flexbox layout */
+  gap: 0.75rem;           /* Space between buttons */
+  margin-top: 0.5rem;     /* Space above button row */
+  flex-wrap: wrap;        /* Wraps buttons to next line on small screens */
+}
+
+
+/* ============================================
+   PUBLICATION BUTTON STYLES
+   ============================================ */
+
+/* Styles pill-shaped outline buttons for publication links */
+.pub-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem 0.9rem;
+  border-radius: 9999px;           /* Creates pill/capsule shape */
+  border: 1px solid #806B72;       /* Muted purple/mauve border */
+  color: #fdfcfc;                  /* Light text color */
+  text-decoration: none;           /* Removes underline */
+  font-size: 0.85rem;              /* Smaller font for compact buttons */
+  letter-spacing: 0.02em;          /* Slight letter spacing improves legibility */
+  background: transparent;         /* Transparent background for outline effect */
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;  /* Smooth hover effects */
+}
+
+/* Hover and focus states for publication buttons */
+.pub-btn:hover,
+.pub-btn:focus-visible {
+  background: #806B72;              /* Fills background on hover */
+  transform: translateY(-1px);      /* Subtle lift effect */
+  border: 1px solid var(--color-accent);  /* Uses theme accent color if available */
+  color: #fdfcfc;                   /* Maintains light text */
+}
+
+
+/* ============================================
+   PUBLICATION PAGE LAYOUT
+   ============================================ */
+
+/* Constrains publication page width for optimal reading */
+.pub-page {
+  max-width: 900px;       /* Prevents text from stretching too wide */
+  margin: 0 auto;         /* Centers the container */
+  margin-top: 1rem;       /* Top spacing */
+  padding: 2rem 1rem 3rem;  /* Internal spacing (extra at bottom) */
+}
+
+
+/* ============================================
+   PUBLICATION CARD STYLES
+   ============================================ */
+
+/* Creates glass-morphism card effect for individual publications */
+.pub-card {
+  padding: 1.25rem 1.5rem;               /* Internal spacing */
+  margin-bottom: 1rem;                   /* Space between cards */
+  border-radius: 1rem;                   /* Rounded corners */
+  border: 1px solid rgba(255, 255, 255, 0.08);  /* Subtle border */
+  background: #64748b13;                 /* Very translucent slate background */
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.45);  /* Strong shadow for depth */
+  backdrop-filter: blur(10px);           /* Blurs background content for glass effect */
+}
+
+/* Styles the citation text within publication cards */
+.pub-citation {
+  margin: 0 0 0.75rem;    /* Bottom margin only */
+  font-size: 0.9rem;      /* Slightly smaller for citation text */
+}
+
+
+/* ============================================
+   PUBLICATION BUTTON STYLES (Duplicate with variations)
+   ============================================ */
+
+/* Second definition of pub-links (same as line 194) - ensures consistent layout */
+.pub-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+/* Second definition of pub-btn with slight variations */
+.pub-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.2rem 0.9rem;                    /* Slightly less vertical padding than first definition */
+  border-radius: 9999px;                     /* Pill shape */
+  border: 1px solid var(--color-accent, #807E6B);  /* Uses CSS variable with fallback */
+  color: var(--color-accent, #e4e7eb);       /* Uses CSS variable with fallback */
+  text-decoration: none;
+  font-size: 0.8rem;                         /* Slightly smaller than first definition */
+  letter-spacing: 0.02em;
+  background: transparent;
+  transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+/* Hover state for publication buttons (second definition) */
+.pub-btn:hover,
+.pub-btn:focus-visible {
+  background: var(--color-accent, #807e6b6f);  /* Semi-transparent accent color */
+  color: #e4e7eb;                              /* Light gray text */
+  transform: translateY(-1px);                 /* Lift effect */
+}
+
+
+/* ===================================
+             View counter 
+   =================================== */
+
+
+.main-page-views {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 12px;
+  background: rgba(71, 85, 105, 0.3); /* slate-600 with transparency */
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(148, 163, 184, 0.2); /* slate-400 */
+  font-size: 1rem;
+  color: #cbd5e1; /* slate-300 */
+  transition: all 0.3s ease;
+}
+
+.main-page-views:hover {
+  background: rgba(71, 85, 105, 0.5);
+  border-color: rgba(148, 163, 184, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+#view-count {
+  font-weight: 700;
+  font-size: 1.3em;
+  color: #60a5fa; /* blue-400 */
+  transition: all 0.3s ease;
+  padding: 0.1rem 0.3rem;
+}
+
+.main-page-views:hover #view-count {
+  color: #7dd3fc; /* sky-300 */
+  text-shadow: 0 0 25px rgba(125, 211, 252, 0.6);
+  transform: scale(1.1);
+}
+
+#add {
+  background: rgba(56, 189, 248, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.4);
+  color: #38bdf8;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  font-size: 1em;
+}
+
+#add:hover {
+  background: rgba(56, 189, 248, 0.3);
+  border-color: #38bff8b5;
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+}
+
+#add:active {
+  transform: scale(0.95);
+}

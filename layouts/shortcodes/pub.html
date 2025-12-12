@@ -1,0 +1,28 @@
+{{- $page := .Page -}}
+
+{{- $raw := .Get 0 -}}                {{/* full citation + URL string */}}
+{{- $parts := split $raw " " -}}
+{{- $lastIndex := sub (len $parts) 1 -}}
+{{- $url := index $parts $lastIndex -}}
+{{- $citation := delimit (first $lastIndex $parts) " " -}}
+
+{{/* Default rel, allow override via second positional param */}}
+{{- $rel := "noopener" -}}
+{{- if ge (len .Params) 2 -}}
+  {{- $rel = index .Params 1 -}}
+{{- end -}}
+
+<article class="pub-card">
+  <div class="pub-citation">
+    {{ $page.RenderString $citation }}
+  </div>
+
+  <div class="pub-links">
+    <a class="pub-btn"
+       href="{{ $url }}"
+       target="_self"
+       {{ if $rel }}rel="{{ $rel }}"{{ end }}>
+      Open article
+    </a>
+  </div>
+</article>

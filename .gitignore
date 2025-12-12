@@ -1,0 +1,33 @@
+# -------------------------
+# Hugo generated content
+# -------------------------
+/public/
+/resources/_gen/
+/assets/jsconfig.json
+hugo_stats.json
+
+# Hugo temporary lock file
+/.hugo_build.lock
+
+# -------------------------
+# Hugo binaries (usually NOT committed)
+# -------------------------
+/hugo.exe
+/hugo.darwin
+/hugo.linux
+
+# -------------------------
+# OS junk
+# -------------------------
+.DS_Store
+Thumbs.db
+
+# -------------------------
+# Editor / IDE
+# -------------------------
+.vscode/
+.idea/
+*.code-workspace
+
+# Local testing
+db.json

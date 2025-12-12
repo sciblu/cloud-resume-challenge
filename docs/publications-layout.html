@@ -1,0 +1,12 @@
+{{ define "main" }}
+
+  {{ if or (.Params.showHero) (.Site.Params.article.showHero) }}
+    {{ partial "hero/background.html" . }}
+  {{ end }}
+
+  <section class="pub-page">
+    <h1 class="pub-heading">{{ .Title }}</h1>
+    {{ .Content }}
+  </section>
+
+{{ end }}

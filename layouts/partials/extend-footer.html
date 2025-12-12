@@ -1,0 +1,4 @@
+{{ $script := resources.Get "js/view-counter.js" }}
+{{ with $script }}
+<script src="{{ .RelPermalink }}"></script>
+{{ end }}

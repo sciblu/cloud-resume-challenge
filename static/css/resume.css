@@ -1,0 +1,231 @@
+/* Page background  enableDefault = true*/
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+/* Match Blowfish overall vibe: dark base + overlayed image */
+body {
+  font-family: arial;
+  position: relative;
+  background-color: #020617; /* close to Blowfish's dark neutral */
+}
+
+
+/* Background image + dark gradient overlay + slight blur */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+
+  /* Same bg image you use on the homepage */
+  background-image:
+    linear-gradient(to bottom,
+      rgba(2, 6, 23, 0.298),   /* top: dark overlay */
+      rgba(15, 23, 42, 0.95) /* bottom: even darker */
+    ),
+    url('/img/sand-hero-background.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Soft blur + tiny scale like the Blowfish background layout */
+  filter: blur(2px);
+  transform: scale(1.03);
+}
+
+/* Wrapper for the back button */
+.resume-nav {
+  max-width: 960px;          /* matches a typical content width */
+  margin: 1.5rem auto 0;     /* <-- space from top of page */
+  padding: 0 1rem;           /* a little side breathing room */
+}
+
+/* Turn the link into a styled button */
+.resume-nav-link {
+  display: inline-block;
+  padding: 0.5rem 1.1rem;
+  border-radius: 999px;      /* pill shape */
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  background: #6377a4;  /* dark bluish */
+  color: #f9fafb;
+  border: 1px solid oklab(51.953% -0.01751 -0.07707 / 0.814);
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.45);
+  cursor: pointer;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.15s ease;
+}
+
+.resume-nav-link:hover {
+  background: rgba(15, 23, 42, 1);
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.55);
+  transform: translateY(-1px);
+}
+
+.resume-nav-link:active {
+  transform: translateY(0);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.35);
+}
+
+/* Optional: keyboard focus style */
+.resume-nav-link:focus {
+  outline: 2px solid #e5e7eb;
+  outline-offset: 3px;
+}
+
+
+
+
+/* White "paper" */
+.resume-page {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem 2.5rem;
+  background-color: rgba(255, 255, 255, 0.96);
+  /*background: #ffffff;*/
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.6);
+  border-radius: 0.5rem;
+  /*color: #111827;*/
+  box-sizing: border-box;
+}
+
+/* Header */
+.resume-header {
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.resume-header h1 {
+  font-size: 1.9rem;
+  margin: 0 0 0.25rem;
+}
+
+.resume-tagline {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+  color: #4b5563;
+}
+
+.resume-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.resume-contact a {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+.resume-contact a:hover {
+  text-decoration: underline;
+}
+
+/* Sections */
+.resume-section {
+  margin-top: 1.5rem;
+}
+
+.resume-section-title {
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.6rem;
+  text-transform: uppercase;
+}
+
+.resume-section + .resume-section {
+  border-top: 1px solid #e5e7eb;
+  padding-top: 1.5rem;
+}
+
+/* Columns for skills */
+.resume-columns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.resume-columns ul {
+  margin: 0;
+  padding-left: 1.1rem;
+  
+
+}
+
+
+/* Experience / project items */
+.resume-item {
+  margin-top: 1rem;
+}
+
+.resume-item-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: baseline;
+  flex-wrap: wrap;
+}
+
+.resume-item-role {
+  font-size: 1rem;
+  margin: 0;
+  font-weight: 600;
+}
+
+.resume-item-company {
+  margin: 0.1rem 0 0;
+  font-size: 0.9rem;
+  color: #4b5563;
+}
+
+.resume-item-meta {
+  font-size: 0.85rem;
+  color: #4b5563;
+  text-align: right;
+}
+
+/* Bullet lists */
+.resume-section ul {
+  margin: 0.25rem 0 0.5rem;
+  padding-left: 1.2rem;
+}
+
+.resume-section li {
+  margin-bottom: 0.25rem;
+  line-height: 2.08;
+}
+
+/* Typography tweaks */
+.resume-section p {
+  margin: 0;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+/* Print-friendly */
+@media print {
+  body {
+    background: #ffffff;
+  }
+
+  .resume-page {
+    box-shadow: none;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .resume-views {
+    display: none;
+  }
+}
