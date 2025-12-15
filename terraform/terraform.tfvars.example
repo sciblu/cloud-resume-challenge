@@ -1,0 +1,8 @@
+# Example tfvars file
+
+aws_region          = "us-east-1"
+aws_profile         = "your-aws-profile-name"
+domain_name         = "yourdomain.com" 
+hosted_zone_id      = "ZXXXXXXXXXXXXX"
+acm_certificate_arn = "arn:aws:acm:us-east-1:XXXXXXXXXXXX:certificate/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
+
