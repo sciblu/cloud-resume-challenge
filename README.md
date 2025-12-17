@@ -7,8 +7,10 @@ A personal resume site built with **Hugo** + **Blowfish theme**, deployed to AWS
 - **Frontend:** Hugo static site generator, custom HTML/CSS resume page
 - **Theme:** Blowfish (Git submodule)
 - **Icons:** Phosphor Icons (CDN)
-- **Hosting:** AWS (S3, CloudFront, Route 53)
-- **IaC:** Terraform (in progress)
+- **Hosting:** AWS (S3, CloudFront, Route 53, ACM)
+- **IaC:** Terraform
+- **CI/CD:** GitHub Actions with OIDC authentication
+- **Domain:** custom domain with HTTPS
 
 ## Site Structure
 | Section | Implementation |
@@ -25,17 +27,22 @@ A personal resume site built with **Hugo** + **Blowfish theme**, deployed to AWS
 - **AI-assisted development** → architecture decisions and final code review done by me
 
 ## Current Progress ✅
-- [x] Domain purchased and registered
+- [x] Domain purchased and registered (lahdigital.dev)
 - [x] AWS account created with IAM admin user
 - [x] Hugo site files uploaded to GitHub repo
-- [x] Learning Terraform for S3 bucket provisioning
+- [x] Infrastructure as Code with Terraform
+- [x] S3 buckets (www and root domain)
+- [x] CloudFront distributions with OAC
+- [x] ACM SSL certificates
+- [x] Route 53 DNS records
+- [x] CloudFront Function for Hugo directory routing
+- [x] GitHub Actions CI/CD with OIDC authentication
+- [x] Automated deployment on push to main
+- [x] Site is live at my registar domaiin
 
 ## Next Steps 🚧
-- [ ] S3 static website hosting
-- [ ] CloudFront distribution + HTTPS
-- [ ] Route 53 DNS configuration
 - [ ] Visitor counter (Lambda + API Gateway + DynamoDB)
-- [ ] CI/CD pipeline
+- [ ] Blog section
 
 ## Key Files Quick Reference
 ```
@@ -43,7 +50,10 @@ static/resume/index.html      # Resume page
 static/css/resume.css         # Resume styles
 layouts/shortcodes/pub.html   # Publication shortcode
 themes/blowfish/              # Theme (submodule)
+terraform/                    # Infrastructure as Code
+.github/workflows/            # CI/CD deployment pipeline
 ```
+
 
 ---
 📄 **Full documentation:** [See detailed README](./docs/README.md)

@@ -427,41 +427,309 @@ All markup in this repo was written specifically for this project.
 
 
 
-## 7. Next Steps and AWS Deployment Plan
+## 7. AWS Deployment Architecture
+
+### 7.1 Infrastructure Overview
+
+The site is deployed on AWS using a production-grade infrastructure that emphasizes security, performance, and automation.
 
 
-This repo currently focuses on the **frontend and content**. The next phase is deploying it as part of a full Cloud Resume Challenge implementation on AWS.
+**Core Services:**
 
-Planned deployment steps:
+- **Amazon S3** – Private buckets for static content storage
+- **Amazon CloudFront** – Global CDN with edge caching and HTTPS
+- **AWS Certificate Manager** – SSL/TLS certificates for custom domain
+- **Amazon Route 53** – DNS management and domain routing
+- **CloudFront Functions** – Request transformation for Hugo directory routing
+- **GitHub Actions** – CI/CD pipeline with OIDC authentication
+- **Terraform** – Infrastructure as Code for reproducible deployments
 
-- **Static hosting on Amazon S3**
+### 7.2 Domain Architecture
 
-  -Build the Hugo site
-  -Upload the generated site and static resume to an S3 bucket configured for static website hosting
+The site uses a dual-domain setup that follows AWS best practices:
 
-- **Global distribution and HTTPS with Amazon CloudFront**
+**Primary Domain**
+- S3 bucket: `www` – stores actual Hugo site content
+- CloudFront distribution with Origin Access Control (OAC)
+- HTTPS enforced via ACM certificate
+- CloudFront Function for directory index routing
 
-  -Put CloudFront in front of the S3 bucket
-  -Use CloudFront for caching and TLS termination
+**Root Domain **
+- S3 bucket: `exampledemo.dev` – configured for redirect
+- Separate CloudFront distribution
+- Redirects all traffic to www subdomain
 
-- **Custom domain and DNS**
+**Why this architecture?**
 
-  -Use a domain from a third-party registrar
-  -Manage DNS with Amazon Route 53 (or Cloudflare if I decide to keep using it)
-  -Point `www.my-domain.com` (example) at the CloudFront distribution
+Storing content on the www subdomain instead of the naked domain prevents cookie scope inheritance issues. Cookies set on a naked domain automatically propagate to ALL subdomains, which would create unnecessary overhead and potential security issues for future additions like `api.exampledemo.dev` or `blog.exampledemo.dev`.
 
-- **Visitor counter**
+### 7.3 Security Implementation
 
-  - Implemented using AWS services such as:
+**Private S3 Buckets**
+- All public access blocked at bucket level
+- Content only accessible via CloudFront
+- Direct S3 URLs return "Access Denied"
 
-    - AWS Lambda (function to read/update the visitor count)
-    - API Gateway (HTTP endpoint for the counter)
-    - Amazon DynamoDB (persistent store for the count)
-  - A small JavaScript snippet on the site will:
-    - Call the API
-    - Display the visitor count in the UI
+**Origin Access Control (OAC)**
+- CloudFront authenticates to S3 using AWS service principal
+- S3 bucket policy explicitly allows only the specific CloudFront distribution
+- Modern replacement for legacy Origin Access Identity (OAI)
 
-This is the frontend and design side. The AWS infrastructure, CI/CD, and visitor counter will be covered in a separate architecture/infra document once that part is implemented.
+**HTTPS Everywhere**
+- ACM certificate covers both lahdigital.dev and *.lahdigital.dev
+- Certificate must be in us-east-1 region (CloudFront requirement)
+- TLS 1.2 minimum protocol version
+- Automatic redirect from HTTP to HTTPS
+
+**IAM Best Practices**
+- GitHub Actions uses OIDC (no long-lived access keys)
+- Temporary credentials issued per deployment
+- Least-privilege IAM policies for deployment role
+
+### 7.4 CloudFront Function for Hugo Routing
+
+**The Problem:**
+
+When using CloudFront with OAC to access S3, directory URLs like `/publications/` don't automatically resolve to `/publications/index.html`. This happens because CloudFront with OAC uses the S3 bucket endpoint (which doesn't understand directory indexes) rather than the S3 website endpoint (which requires public bucket access).
+
+**The Solution:**
+
+A CloudFront Function rewrites incoming requests before they reach S3:
+
+```javascript
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+    
+    // If URI ends with '/', append 'index.html'
+    if (uri.endsWith('/')) {
+        request.uri += 'index.html';
+    }
+    // If URI doesn't have a file extension, assume it's a directory
+    else if (!uri.includes('.')) {
+        request.uri += '/index.html';
+    }
+    
+    return request;
+}
+```
+
+**Benefits:**
+- Executes at edge locations (sub-millisecond latency)
+- Maintains security with private S3 buckets
+- No Lambda@Edge complexity or cost
+- Works seamlessly with Hugo's directory structure
+
+### 7.5 Infrastructure as Code (Terraform)
+
+**Why Terraform Instead of CloudFormation:**
+
+The bootcamp instructor used Ansible and CloudFormation, but I chose Terraform for its cloud-agnostic approach. The skills and patterns learned with Terraform translate directly to GCP, Azure, and other providers, making it a more valuable long-term investment.
+
+**Terraform Structure:**
+
+```
+terraform/
+├── main.tf           # Provider configuration
+├── variables.tf      # Variable definitions
+├── terraform.tfvars  # Actual values (not committed)
+├── s3.tf            # S3 bucket resources
+├── cloudfront.tf    # CloudFront distributions
+├── route53.tf       # DNS records
+└── outputs.tf       # Resource identifiers
+```
+
+**Key Terraform Resources:**
+
+- `aws_s3_bucket` – Both www and root domain buckets
+- `aws_s3_bucket_public_access_block` – Enforce private buckets
+- `aws_s3_bucket_policy` – Allow CloudFront OAC access
+- `aws_s3_bucket_website_configuration` – Root domain redirect
+- `aws_cloudfront_origin_access_control` – Secure S3 access
+- `aws_cloudfront_distribution` – Both www and redirect distributions
+- `aws_route53_record` – A records aliasing to CloudFront
+
+**Deployment Workflow:**
+
+```bash
+terraform init      # Initialize providers
+terraform plan      # Preview changes
+terraform apply     # Deploy infrastructure
+terraform destroy   # Tear down (for testing)
+```
+
+Testing reproducibility was crucial: `terraform destroy` followed by `terraform apply` proves the entire infrastructure can be rebuilt from code.
+
+### 7.6 CI/CD with GitHub Actions
+
+**Pipeline Architecture:**
+
+The deployment pipeline uses GitHub Actions with OIDC authentication to AWS, eliminating the need for long-lived access keys.
+
+**Workflow Jobs:**
+
+1. **Build Job**
+   - Installs Hugo CLI (extended version for Blowfish theme)
+   - Checks out repository with submodules
+   - Builds site with production settings
+   - Uploads build artifact
+
+2. **Deploy Job**
+   - Downloads build artifact
+   - Authenticates to AWS via OIDC
+   - Syncs content to S3 with `--delete` flag
+   - Invalidates CloudFront cache
+
+**OIDC Authentication Setup:**
+
+1. Created GitHub OIDC identity provider in AWS IAM
+2. Created IAM role with trust policy allowing GitHub Actions
+3. Added inline policies for S3 sync and CloudFront invalidation
+4. Configured GitHub Actions with `id-token: write` permission
+
+**Security Benefits:**
+- No AWS access keys stored in GitHub
+- Temporary credentials expire automatically
+- Role assumption scoped to specific repository and branch
+- Follows AWS IAM best practices
+
+**Workflow File:** `.github/workflows/deploy.yml`
+
+**Trigger:** Every push to main branch
+
+**Result:** Site updates automatically within 2-3 minutes
+
+### 7.6 Manual AWS Configuration Process
+
+Before implementing Terraform, I manually configured all AWS services to understand each component:
+
+**Configuration Order:**
+
+1. **Route 53** – Created hosted zone, updated registrar nameservers
+2. **ACM** – Requested certificate in us-east-1, validated via DNS
+3. **S3** – Created buckets, configured public access blocks
+4. **CloudFront** – Created distributions with OAC, attached certificates
+5. **Route 53** – Added A records aliasing to CloudFront distributions
+6. **CloudFront Functions** – Created and associated rewrite function
+
+This manual-first approach ensured I understood what each Terraform resource would create before automating it.
+
+---
+
+## 8. Deployment and Testing
+
+### 8.1 Local Development
+
+```bash
+# Start Hugo development server
+hugo server -D
+
+# Build production site
+hugo --minify --baseURL domain
+```
+
+### 8.2 Manual Deployment (before CI/CD)
+
+```bash
+# Build site
+hugo
+
+# Sync to S3
+aws s3 sync ./public s3://www.exampledemo.dev --delete
+
+# Invalidate CloudFront cache
+aws cloudfront create-invalidation \
+  --distribution-id 
+  --paths "/*"
+```
+
+### 8.3 Automated Deployment (current)
+
+```bash
+# Make changes to content or code
+git add .
+git commit -m "Update resume"
+git push origin main
+
+# GitHub Actions automatically:
+# 1. Builds Hugo site
+# 2. Syncs to S3
+# 3. Invalidates CloudFront cache
+```
+
+### 8.4 Testing Checklist
+Checked to make sure each page of site loaded properly and that naked domain redirects 
+to www. 
+---
+
+## 9. CloudFront
+
+### 9.1 CloudFront Caching Strategy
+
+**Cache Invalidation:**
+Triggered automatically on deployment via GitHub Actions. Invalidates all paths (`/*`) to ensure changes appear immediately.
+
+---
+
+## 10. Future Enhancements
+
+### 10.1 Planned Features
+
+**Visitor Counter**
+- AWS Lambda function to track visits
+- Amazon DynamoDB for persistent storage
+- API Gateway for HTTP endpoint
+- JavaScript client to display count
+
+**Blog Section**
+- Already scaffolded with Blowfish theme
+- Content structure ready
+- Will document cloud learning journey
+---
+
+## 11. Key Learnings
+
+### 11.1 Infrastructure as Code Benefits
+
+- **Reproducibility:** Entire infrastructure can be rebuilt from code
+- **Version Control:** Infrastructure changes tracked in Git
+- **Documentation:** Terraform files serve as living documentation
+- **Testing:** Can destroy and recreate infrastructure to verify
+
+### 11.2 Security First Approach
+
+- Private S3 buckets with OAC > public buckets
+- OIDC authentication > long-lived access keys
+- HTTPS everywhere with modern TLS versions
+- Least-privilege IAM policies
+
+### 11.3 Manual Configuration Before Automation
+
+Configuring AWS services manually first before writing Terraform was invaluable:
+- Understood what each resource does
+- Knew correct configuration values
+- Could troubleshoot Terraform issues
+- Appreciated automation benefits
+
+---
+
+## 12. Resources and References
+
+### 12.1 Documentation Used
+
+- [Hugo Documentation](https://gohugo.io/documentation/)
+- [Blowfish Theme Docs](https://blowfish.page/)
+- [AWS CloudFront Documentation](https://docs.aws.amazon.com/cloudfront/)
+- [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
+- [GitHub Actions OIDC](https://docs.github.com/en/actions/deployment/security-hardening-your-deployments/configuring-openid-connect-in-amazon-web-services)
+
+### 12.2 Tools Used
+
+- **Hugo** v0.139.0 (extended)
+- **Terraform** v1.9+
+- **AWS CLI** v2
+- **Git** for version control
+- **VS Code** for development
 
 
 
