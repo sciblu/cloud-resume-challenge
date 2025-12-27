@@ -41,8 +41,11 @@ A personal resume site built with **Hugo** + **Blowfish theme**, deployed to AWS
 - [x] Site is live at my registar domaiin
 
 ## Next Steps 🚧
-- [ ] Visitor counter (Lambda + API Gateway + DynamoDB)
+- [x] Visitor counter (Lambda + API Gateway + DynamoDB)
 - [ ] Blog section
+
+## Architecture Diagram
+![AWS Architecture Diagram](docs/Final_AWS_CRC.png)
 
 ## Key Files Quick Reference
 ```

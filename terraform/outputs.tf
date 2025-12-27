@@ -36,3 +36,27 @@ output "github_actions_config" {
     aws_region      = var.aws_region
   }
 }
+
+# ============================================================================
+# BACKEND OUTPUTS - Visitor Counter API
+# ============================================================================
+
+output "api_endpoint" {
+  description = "The visitor counter API endpoint (default AWS URL)"
+  value       = "${aws_apigatewayv2_api.visitor_api.api_endpoint}/count"
+}
+
+output "api_custom_domain" {
+  description = "The visitor counter API custom domain endpoint"
+  value       = "https://api-counter.${var.domain_name}/count"
+}
+
+output "dynamodb_table_name" {
+  description = "Name of the DynamoDB table"
+  value       = aws_dynamodb_table.visitor_counter.name
+}
+
+output "lambda_function_name" {
+  description = "Name of the Lambda function"
+  value       = aws_lambda_function.visitor_counter.function_name
+}

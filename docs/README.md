@@ -671,20 +671,62 @@ Triggered automatically on deployment via GitHub Actions. Invalidates all paths 
 
 ---
 
-## 10. Future Enhancements
+## 10. Visitor Counter Backend
 
-### 10.1 Planned Features
+![AWS Architecture Diagram](Final_AWS_CRC.png)
 
-**Visitor Counter**
-- AWS Lambda function to track visits
-- Amazon DynamoDB for persistent storage
-- API Gateway for HTTP endpoint
-- JavaScript client to display count
+*Diagram created with draw.io*
 
-**Blog Section**
-- Already scaffolded with Blowfish theme
-- Content structure ready
-- Will document cloud learning journey
+### 10.1 Components
+
+**DynamoDB**
+- Stores visitor count with atomic updates
+- Single table design for simplicity
+
+**Lambda Function**
+- Python runtime
+- GET endpoint returns current visitor count
+- Increments count on each request
+
+**API Gateway (HTTP V2)**
+- Lightweight HTTP API (not REST API)
+- Connected to custom subdomain
+
+### 10.2 Implementation Journey
+
+**What Worked Smoothly**
+- Lambda deployment via Terraform
+- DynamoDB table provisioning
+- Initial API Gateway setup with AWS-generated URL
+- Tested successfully using curl commands
+
+**Challenge: Custom Domain Integration**
+
+Connecting my domain to the API via subdomain proved more difficult than expected. After consulting multiple AI tools and Stack Overflow, the solution wasn't immediately obvious.
+
+**The Issue:** API Gateway requires a service-linked role to map custom domains, and my Terraform user lacked admin privileges to create it automatically.
+
+**The Solution:**
+
+1. Ensure AWS CLI is installed on your machine
+
+2. Run the following command (as administrator):
+
+   ```bash
+   aws iam create-service-linked-role \
+     --aws-service-name ops.apigateway.amazonaws.com \
+     --profile YourProfileName
+   ```
+
+3. This creates the API Gateway service-linked role managed by AWS, enabling custom domain mapping
+
+**Why This Matters:** If you're using a non-admin IAM user for Terraform (which is a security best practice), you'll likely encounter this same issue when attempting custom domain configuration.
+
+### 10.3 Lessons Learned
+
+1. **HTTP API vs REST API**: API Gateway HTTP V2 is simpler and more cost-effective for basic use cases
+2. **Service-Linked Roles**: Some AWS services require these special roles that can't always be created through Terraform with limited permissions
+3. **Non-Admin Terraform Users**: Running Terraform with least-privilege IAM users is good practice but requires manual setup of certain AWS-managed resources
 ---
 
 ## 11. Key Learnings
@@ -731,5 +773,12 @@ Configuring AWS services manually first before writing Terraform was invaluable:
 - **Git** for version control
 - **VS Code** for development
 
+---
 
+## 13. Planned Features
+
+**Blog Section**
+- Already scaffolded with Blowfish theme
+- Content structure ready
+- Will document cloud learning journey
 

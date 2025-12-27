@@ -50,7 +50,14 @@ resource "aws_cloudfront_distribution" "www" {
 
     # Use managed cache policy for static content
     cache_policy_id = "658327ea-f89d-4fab-a63d-7e88639e58f6" # CachingOptimized
+
+    # CloudFront Function association - rewrites URLs for clean paths
+    function_association {
+      event_type   = "viewer-request"                      # Runs before CloudFront checks cache
+      function_arn = aws_cloudfront_function.rewrite.arn   # References the function above
+    }
   }
+
 
   # Custom error pages - important for single-page apps and Hugo
   custom_error_response {
