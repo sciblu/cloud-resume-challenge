@@ -26,10 +26,10 @@
  url = "/resume/index.html"
  weight = 10
 
-#[[main]]
-#  name = "Blog"
-#  pageRef = "posts"
-#  weight = 10
+[[main]]
+  name = "Blog"
+  pageRef = "posts"
+  weight = 30
 
 #[[main]]
 #  name = "Parent"

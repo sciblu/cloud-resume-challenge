@@ -777,8 +777,18 @@ Configuring AWS services manually first before writing Terraform was invaluable:
 
 ## 13. Planned Features
 
+**Frontend Visitor counter display**
+- Frontend JavaScript to call visitor counter API and display count on homepage
+
 **Blog Section**
-- Already scaffolded with Blowfish theme
-- Content structure ready
-- Will document cloud learning journey
+- Created first blog post: "Hello World" - a simple introduction to the blog
+- Implemented page bundle structure (`content/posts/Hello-Internet/index.md`)
+- Configured custom background image for posts list page using `_index.md`
+- Customized posts list layout:
+  - Changed heading from "Posts" to "Blog" 
+  - Added custom hero background image (`/img/sand-hero-background.jpeg`)
+  - Disabled heading anchors on list page for cleaner appearance
+  - Set `heroStyle = "background"` in params.toml for full-width hero images
+- Each blog post uses featured images displayed as background heroes
+- Blog architecture ready for future technical content and cloud learning documentation
 
