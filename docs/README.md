@@ -775,9 +775,9 @@ Configuring AWS services manually first before writing Terraform was invaluable:
 
 ---
 
-## 13. Planned Features
+## 13. Backend Visitor Counter
 
-**Frontend Visitor Counter Display** ✅
+### 13.1 Frontend Visitor Counter Display
 
 The visitor counter is now fully implemented with a JavaScript frontend that connects to the AWS backend.
 
@@ -802,7 +802,9 @@ The visitor counter is now fully implemented with a JavaScript frontend that con
 - **Environment switching:** The ternary pattern `window.location.hostname === "localhost" ? localURL : prodURL` cleanly handles dev vs production
 - **Throttling layers:** Client-side localStorage prevents redundant API calls; API Gateway throttling protects against abuse
 
-**Blog Section**
+## 14. Blog
+
+### 14.1 Blog Section**
 - Created first blog post: "Hello World" - a simple introduction to the blog
 - Implemented page bundle structure (`content/posts/Hello-Internet/index.md`)
 - Configured custom background image for posts list page using `_index.md`
