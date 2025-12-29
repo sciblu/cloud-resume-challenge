@@ -42,7 +42,7 @@ A personal resume site built with **Hugo** + **Blowfish theme**, deployed to AWS
 
 ## Next Steps 🚧
 - [x] Visitor counter (Lambda + API Gateway + DynamoDB)
-- [ ] Frontend JavaScript to call visitor counter API and display count on homepage
+- [x] Frontend JavaScript to call visitor counter API and display count on homepage
 - [x] Blog section
 
 ## Architecture Diagram

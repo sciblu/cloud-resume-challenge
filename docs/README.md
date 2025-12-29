@@ -777,8 +777,30 @@ Configuring AWS services manually first before writing Terraform was invaluable:
 
 ## 13. Planned Features
 
-**Frontend Visitor counter display**
-- Frontend JavaScript to call visitor counter API and display count on homepage
+**Frontend Visitor Counter Display** ✅
+
+The visitor counter is now fully implemented with a JavaScript frontend that connects to the AWS backend.
+
+**Implementation:**
+- JavaScript file at `assets/js/view-counter.js` handles API communication
+- Loaded via Hugo's `extend-footer.html` partial using the asset pipeline
+- Counter displayed on homepage in `content/_index.md`
+- Environment-aware: uses mock API locally, real API in production
+
+**Throttling Strategy:**
+- **Client-side:** localStorage tracks daily visits—each visitor counted once per day
+- **Server-side:** API Gateway throttling (10 req/sec, 20 burst) configured via Terraform
+
+**Local Development Setup:**
+- Mock API using json-server: `json-server --watch db.json --port 3001`
+- `db.json` structure: `{ "counter": { "count": 0 } }`
+- Two terminals: one for Hugo (`hugo server`), one for mock API
+
+**What I Learned:**
+- **Mock APIs are simple:** json-server let me validate frontend JavaScript in minutes without building a backend
+- **Hugo themes have their own patterns:** Blowfish uses `extend-footer.html` for custom scripts, not `customScripts` in config
+- **Environment switching:** The ternary pattern `window.location.hostname === "localhost" ? localURL : prodURL` cleanly handles dev vs production
+- **Throttling layers:** Client-side localStorage prevents redundant API calls; API Gateway throttling protects against abuse
 
 **Blog Section**
 - Created first blog post: "Hello World" - a simple introduction to the blog

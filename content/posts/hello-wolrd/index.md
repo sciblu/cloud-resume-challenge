@@ -1,7 +1,7 @@
 ---
 title: "Hello World"
 description: "This is a demo of adding content to the homepage."
-date: 2025-12-27
+date: 2025-12-28
 featuredImage: "featured.jpg"
 layout: "background" 
 layoutBackgroundBlur: false
