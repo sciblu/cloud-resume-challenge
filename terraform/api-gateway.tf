@@ -67,6 +67,15 @@ resource "aws_apigatewayv2_route" "visitor_route" {
   target = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
 }
 
+# POST route for incrementing the counter
+resource "aws_apigatewayv2_route" "visitor_route_post" {
+  api_id = aws_apigatewayv2_api.visitor_api.id
+  
+  route_key = "POST /count"
+  
+  target = "integrations/${aws_apigatewayv2_integration.lambda_integration.id}"
+}
+
 # -----------------------------------------------------------------------------
 # STAGE - A deployment of your API (like dev, staging, prod)
 # -----------------------------------------------------------------------------

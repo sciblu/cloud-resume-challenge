@@ -1,6 +1,6 @@
 const API_URL = window.location.hostname === "localhost" 
   ? "http://localhost:3001/counter" 
-  : "https://api-counter.lahdigital.dev";
+  : "https://api-counter.lahdigital.dev/count";
 
 const STORAGE_KEY = "lastVisitDate";
 
@@ -32,18 +32,14 @@ async function getCount() {
   }
 }
 
-// Increment count via PATCH and update display
+// Increment count via POST and update display
 async function incrementCount() {
   try {
-    const currentCount = await getCount();
-    if (currentCount === null) return;
-    
     const response = await fetch(API_URL, {
-      method: "PATCH",
+      method: "POST",
       headers: {
         "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ count: currentCount + 1 })
+      }
     });
     const data = await response.json();
     document.querySelector("#view-count").innerText = data.count;
