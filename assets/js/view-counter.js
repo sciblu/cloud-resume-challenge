@@ -2,24 +2,25 @@ const API_URL = window.location.hostname === "localhost"
   ? "http://localhost:3001/counter" 
   : "https://api-counter.lahdigital.dev/count";
 
-const STORAGE_KEY = "lastVisitDate";
+const STORAGE_KEY = "visitor_counted";
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000; // 7 days in milliseconds
 
-// Check if visitor has already been counted today
-function hasVisitedToday() {
-  const lastVisit = localStorage.getItem(STORAGE_KEY);
-  if (!lastVisit) return false;
+// Check if visitor has already been counted within the last 7 days
+function hasRecentVisit() {
+  const lastCounted = localStorage.getItem(STORAGE_KEY);
+  if (!lastCounted) return false;
   
-  const today = new Date().toDateString();
-  return lastVisit === today;
+  const now = Date.now();
+  const elapsed = now - parseInt(lastCounted);
+  return elapsed < SEVEN_DAYS_MS;
 }
 
-// Mark visitor as counted for today
+// Mark visitor as counted with current timestamp
 function markVisited() {
-  const today = new Date().toDateString();
-  localStorage.setItem(STORAGE_KEY, today);
+  localStorage.setItem(STORAGE_KEY, Date.now().toString());
 }
 
-// Fetch and display current count
+// Fetch and display current count (no increment)
 async function getCount() {
   try {
     const response = await fetch(API_URL);
@@ -52,13 +53,13 @@ async function incrementCount() {
 document.addEventListener("DOMContentLoaded", function() {
   console.log("Initializing view counter");
   
-  if (hasVisitedToday()) {
-    // Returning visitor today - just show the count
-    console.log("Returning visitor - displaying count only");
+  if (hasRecentVisit()) {
+    // Visited within last 7 days - just show the count
+    console.log("Recent visitor - displaying count only");
     getCount();
   } else {
-    // New visitor today - increment and mark as visited
-    console.log("New visitor - incrementing count");
+    // New visitor or 7+ days since last count - increment and mark
+    console.log("New/returning visitor - incrementing count");
     incrementCount();
     markVisited();
   }
