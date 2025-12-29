@@ -1,4 +1,4 @@
-# Cloud Resume Challenge – TL;DR
+# Cloud Resume Challenge 2025 – TL;DR
 
 ## What This Is
 A personal resume site built with **Hugo** + **Blowfish theme**, deployed to AWS as part of the Cloud Resume Challenge.

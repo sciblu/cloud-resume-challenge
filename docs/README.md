@@ -1,4 +1,4 @@
- # Cloud Resume Challenge – Frontend & Content Implementation
+ # Cloud Resume Challenge 2025 – Frontend & Content Implementation
 
 This repository contains the frontend portion of my Cloud Resume Challenge. I’m using the [Hugo](https://gohugo.io) static site generator with the **Blowfish*-theme to host:
 
